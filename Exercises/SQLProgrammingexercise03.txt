@@ -1,0 +1,176 @@
+
+
+--Arnold Burnley
+--SQLProgrammingexercise03.sql
+--7/18/2020
+
+--1. Using SQLite and the Northwind database, create a line item report that contains a line for each
+--product in the order with the following columns: the order id, the product id, the unit price, the
+--quantity sold, the line item price, and the percent of that line item constitutes of the total amount of
+--the order.
+
+SELECT od.orderid, p.productid, od.unitprice, od.quantity, sum(od.unitprice*od.quantity) AS LineTotal, sum(od.unitprice *od.quantity)*.01 from order_details od join products p on p.productid = od.productid group by od.orderid limit 10;
+OrderID|ProductID|UnitPrice|Quantity|LineTotal|sum(od.unitprice *od.quantity)*.01
+10248|11|14.0|12|440.0|4.4
+10249|14|18.6|9|1863.4|18.634
+10250|41|7.7|10|1813.0|18.13
+10251|22|16.8|6|670.8|6.708
+10252|20|64.8|40|3730.0|37.3
+10253|31|10.0|20|1444.8|14.448
+10254|24|3.6|15|625.2|6.252
+10255|2|15.2|20|2490.5|24.905
+10256|53|26.2|15|517.8|5.178
+10257|27|35.1|25|1119.9|11.199
+
+--I want to know the unique (distinct) cities, regions, and postal codes: (a) where we have both customers
+--and employees, (b) where we have customers but no employees AND both customers and employees,
+--and (c) where we have employees but no customers AND both customers and employees. Write three
+--queries, using inner and outer joins. Report the results of the queries. There is no need for any further
+--Part a: customers and employees
+
+SELECT DISTINCT e.firstname, e.lastname, c.customerid, e.region, e.city, e. postalcode FROM employees e JOIN customers c ON e.region LIKE c.region GROUP BY e.city;
+FirstName|LastName|CustomerID|Region|City|PostalCode
+Janet|Leverling|LAZYK|WA|Kirkland|98033
+Margaret|Peacock|LAZYK|WA|Redmond|98052
+Nancy|Davolio|LAZYK|WA|Seattle|98122
+Andrew|Fuller|LAZYK|WA|Tacoma|98401
+
+--Part b: customers but no employees AND both customers and employees
+
+SELECT DISTINCT e.employeeid, e.lastname, e.region, e.city, e.Postalcode, c.customerid, c.region, c.city, c.postalcode from customers c LEFT JOIN employees e on c.city like e.city;
+EmployeeID|LastName|Region|City|PostalCode|CustomerID|Region|City|PostalCode
+|||||-- CustomerID|Region|City|PostalCode
+|||||ALFKI||Berlin|12209
+|||||ANATR||México D.F.|05021
+|||||ANTON||México D.F.|05023
+5|Buchanan|NULL|London|SW1 8JR|AROUT||London|WA1 1DP
+6|Suyama|NULL|London|EC2 7JR|AROUT||London|WA1 1DP
+7|King|NULL|London|RG1 9SP|AROUT||London|WA1 1DP
+9|Dodsworth|NULL|London|WG2 7LT|AROUT||London|WA1 1DP
+|||||BERGS||Luleå|S-958 22
+|||||BLAUS||Mannheim|68306
+|||||BLONP||Strasbourg|67000
+|||||BOLID||Madrid|28023
+|||||BONAP||Marseille|13008
+|||||BOTTM|BC|Tsawassen|T2F 8M4
+5|Buchanan|NULL|London|SW1 8JR|BSBEV||London|EC2 5NT
+6|Suyama|NULL|London|EC2 7JR|BSBEV||London|EC2 5NT
+7|King|NULL|London|RG1 9SP|BSBEV||London|EC2 5NT
+9|Dodsworth|NULL|London|WG2 7LT|BSBEV||London|EC2 5NT
+|||||CACTU||Buenos Aires|1010
+|||||CENTC||México D.F.|05022
+|||||CHOPS||Bern|3012
+|||||COMMI|SP|Sao Paulo|05432-043
+5|Buchanan|NULL|London|SW1 8JR|CONSH||London|WX1 6LT
+6|Suyama|NULL|London|EC2 7JR|CONSH||London|WX1 6LT
+7|King|NULL|London|RG1 9SP|CONSH||London|WX1 6LT
+9|Dodsworth|NULL|London|WG2 7LT|CONSH||London|WX1 6LT
+|||||DRACD||Aachen|52066
+|||||DUMON||Nantes|44000
+5|Buchanan|NULL|London|SW1 8JR|EASTC||London|WX3 6FW
+6|Suyama|NULL|London|EC2 7JR|EASTC||London|WX3 6FW
+7|King|NULL|London|RG1 9SP|EASTC||London|WX3 6FW
+9|Dodsworth|NULL|London|WG2 7LT|EASTC||London|WX3 6FW
+|||||ERNSH||Graz|8010
+|||||FAMIA|SP|Sao Paulo|05442-030
+|||||FISSA||Madrid|28034
+|||||FOLIG||Lille|59000
+|||||FOLKO||Bräcke|S-844 67
+|||||FRANK||München|80805
+|||||FRANR||Nantes|44000
+|||||FRANS||Torino|10100
+|||||FURIB||Lisboa|1675
+|||||GALED||Barcelona|08022
+|||||GODOS||Sevilla|41101
+|||||GOURL|SP|Campinas|04876-786
+|||||GREAL|OR|Eugene|97403
+|||||GROSR|DF|Caracas|1081
+|||||HANAR|RJ|Rio de Janeiro|05454-876
+|||||HILAA|Táchira|San Cristóbal|5022
+|||||HUNGC|OR|Elgin|97827
+|||||HUNGO|Co. Cork|Cork|
+|||||ISLAT|Isle of Wight|Cowes|PO31 7PJ
+|||||KOENE||Brandenburg|14776
+|||||LACOR||Versailles|78000
+|||||LAMAI||Toulouse|31000
+|||||LAUGB|BC|Vancouver|V3F 2K1
+|||||LAZYK|WA|Walla Walla|99362
+|||||LEHMS||Frankfurt a.M.|60528
+|||||LETSS|CA|San Francisco|94117
+|||||LILAS|Lara|Barquisimeto|3508
+|||||LINOD|Nueva Esparta|I. de Margarita|4980
+|||||LONEP|OR|Portland|97219
+|||||MAGAA||Bergamo|24100
+|||||MAISD||Bruxelles|B-1180
+|||||MEREP|Québec|Montréal|H1J 1C3
+|||||MORGK||Leipzig|04179
+5|Buchanan|NULL|London|SW1 8JR|NORTS||London|SW7 1RZ
+6|Suyama|NULL|London|EC2 7JR|NORTS||London|SW7 1RZ
+7|King|NULL|London|RG1 9SP|NORTS||London|SW7 1RZ
+9|Dodsworth|NULL|London|WG2 7LT|NORTS||London|SW7 1RZ
+|||||OCEAN||Buenos Aires|1010
+|||||OLDWO|AK|Anchorage|99508
+|||||OTTIK||Köln|50739
+|||||PARIS||Paris|75012
+|||||PERIC||México D.F.|05033
+|||||PICCO||Salzburg|5020
+|||||PRINI||Lisboa|1756
+|||||QUEDE|RJ|Rio de Janeiro|02389-673
+|||||QUEEN|SP|Sao Paulo|05487-020
+|||||QUICK||Cunewalde|01307
+|||||RANCH||Buenos Aires|1010
+|||||RATTC|NM|Albuquerque|87110
+|||||REGGC||Reggio Emilia|42100
+|||||RICAR|RJ|Rio de Janeiro|02389-890
+|||||RICSU||Genève|1203
+|||||ROMEY||Madrid|28001
+|||||SANTG||Stavern|4110
+|||||SAVEA|ID|Boise|83720
+5|Buchanan|NULL|London|SW1 8JR|SEVES||London|OX15 4NB
+6|Suyama|NULL|London|EC2 7JR|SEVES||London|OX15 4NB
+7|King|NULL|London|RG1 9SP|SEVES||London|OX15 4NB
+9|Dodsworth|NULL|London|WG2 7LT|SEVES||London|OX15 4NB
+|||||SIMOB||Kobenhavn|1734
+|||||SPECD||Paris|75016
+|||||SPLIR|WY|Lander|82520
+|||||SUPRD||Charleroi|B-6000
+|||||THEBI|OR|Portland|97201
+|||||THECR|MT|Butte|59801
+|||||TOMSP||Münster|44087
+|||||TORTU||México D.F.|05033
+|||||TRADH|SP|Sao Paulo|05634-030
+3|Leverling|WA|Kirkland|98033|TRAIH|WA|Kirkland|98034
+|||||VAFFE||Århus|8200
+|||||VICTE||Lyon|69004
+|||||VINET||Reims|51100
+|||||WANDK||Stuttgart|70563
+|||||WARTH||Oulu|90110
+|||||WELLI|SP|Resende|08737-363
+1|Davolio|WA|Seattle|98122|WHITC|WA|Seattle|98128
+8|Callahan|WA|Seattle|98105|WHITC|WA|Seattle|98128
+|||||WILMK||Helsinki|21240
+|||||WOLZA||Warszawa|01-012
+
+--Part c: employees but no customers AND both customers and employees
+
+SELECT DISTINCT e.employeeid, e.lastname, e.region, e.city, e.Postalcode, c.customerid, c.region, c.city, c.postalcode from employees e LEFT JOIN customers c on c.region like e.region;
+EmployeeID|LastName|Region|City|PostalCode|CustomerID|Region|City|PostalCode
+1|Davolio|WA|Seattle|98122|LAZYK|WA|Walla Walla|99362
+1|Davolio|WA|Seattle|98122|TRAIH|WA|Kirkland|98034
+1|Davolio|WA|Seattle|98122|WHITC|WA|Seattle|98128
+2|Fuller|WA|Tacoma|98401|LAZYK|WA|Walla Walla|99362
+2|Fuller|WA|Tacoma|98401|TRAIH|WA|Kirkland|98034
+2|Fuller|WA|Tacoma|98401|WHITC|WA|Seattle|98128
+3|Leverling|WA|Kirkland|98033|LAZYK|WA|Walla Walla|99362
+3|Leverling|WA|Kirkland|98033|TRAIH|WA|Kirkland|98034
+3|Leverling|WA|Kirkland|98033|WHITC|WA|Seattle|98128
+4|Peacock|WA|Redmond|98052|LAZYK|WA|Walla Walla|99362
+4|Peacock|WA|Redmond|98052|TRAIH|WA|Kirkland|98034
+4|Peacock|WA|Redmond|98052|WHITC|WA|Seattle|98128
+5|Buchanan|NULL|London|SW1 8JR||||
+6|Suyama|NULL|London|EC2 7JR||||
+7|King|NULL|London|RG1 9SP||||
+8|Callahan|WA|Seattle|98105|LAZYK|WA|Walla Walla|99362
+8|Callahan|WA|Seattle|98105|TRAIH|WA|Kirkland|98034
+8|Callahan|WA|Seattle|98105|WHITC|WA|Seattle|98128
+9|Dodsworth|NULL|London|WG2 7LT||||
