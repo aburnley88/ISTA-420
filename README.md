@@ -2,7 +2,8 @@
 
 ## Arnold Burnley
 
-SQL activitities from the Microsoft Software and Systems Academy
+TSQL activities from the Microsoft Software and Systems Academy.
+This repository contains my homework, labs, and exercises.
 
 
 
