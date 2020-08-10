@@ -1,6 +1,5 @@
---Name: Arnold Burnley
---FileName: TSQLExercise05.sql
---August 1st, 2020
+
+
 
 use TSQLV4;
 
